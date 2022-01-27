@@ -1,10 +1,10 @@
-package kz.dar.tech.dms.overview.news.api.models;
+package kz.dar.tech.dms.overview.news.api.models.employees;
 
 
 import lombok.Data;
 
 @Data
-public class Entity {
+public class EntityOfEmployees {
     private String id;
     private Name name;
     private NameRu nameRu;

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class Entity {
+public class EntityOfCompanies {
     private String id;
     private String name;
     private String shortName;

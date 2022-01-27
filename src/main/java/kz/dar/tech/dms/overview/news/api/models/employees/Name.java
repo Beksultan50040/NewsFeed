@@ -1,4 +1,4 @@
-package kz.dar.tech.dms.overview.news.api.models;
+package kz.dar.tech.dms.overview.news.api.models.employees;
 
 
 import lombok.Data;

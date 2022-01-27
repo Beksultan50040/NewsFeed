@@ -1,5 +1,6 @@
-package kz.dar.tech.dms.overview.news.api.models;
+package kz.dar.tech.dms.overview.news.api.models.employees;
 
+import kz.dar.tech.dms.overview.news.api.models.ListOfPeople;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -16,13 +16,14 @@ public interface EmployeesFeign {
 
     LocalDate date = LocalDate.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("*-MM-dd");
-    String birthDate = date.format(formatter);
+    java.lang.String birthDate = date.format(formatter);
 
 
     @GetMapping(value = "/integration-api/employees/shortinfo")
     EmployeeInfo info(
-            @RequestHeader("Api-Key") String apiKey,
-            @RequestParam String companyId, @RequestParam String birthDate,
-            @RequestParam (defaultValue = "expression") String birthDateSearchType
+            @RequestHeader("Api-Key") java.lang.String apiKey,
+            @RequestParam java.lang.String companyId, @RequestParam (required = false) java.lang.String birthDate,
+            @RequestParam  (required = false) /*(defaultValue = "expression")*/ java.lang.String birthDateSearchType,
+            @RequestParam (defaultValue = "500") java.lang.String limit
     );
 }

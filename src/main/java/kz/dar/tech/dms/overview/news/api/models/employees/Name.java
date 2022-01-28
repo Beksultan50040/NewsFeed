@@ -7,5 +7,5 @@ import lombok.Data;
 public class Name {
     private String first;
     private String last;
-    private Object middle;
+    private String middle;
 }

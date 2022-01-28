@@ -1,5 +1,7 @@
 package kz.dar.tech.dms.overview.news.api.services.impl;
 
+import kz.dar.tech.dms.overview.news.api.DAO.CompaniesRepo;
+import kz.dar.tech.dms.overview.news.api.DAO.EmployeesRepo;
 import kz.dar.tech.dms.overview.news.api.feign.CompaniesFeign;
 import kz.dar.tech.dms.overview.news.api.feign.EmployeesFeign;
 import kz.dar.tech.dms.overview.news.api.models.employees.EmployeeInfo;
@@ -16,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ListOfEmployeesFromAllCompaniesServiceImpl implements ListOfEmployeesFromAllCompaniesService {
@@ -29,23 +32,37 @@ public class ListOfEmployeesFromAllCompaniesServiceImpl implements ListOfEmploye
     @Autowired
     private ListOfEmployeesFromOneCompanyService listOfEmployeesFromOneCompanyService;
 
+    @Autowired
+    private CompaniesRepo companiesRepo;
+
+    @Autowired
+    private EmployeesRepo employeesRepo;
+
+
     @Value("${api.key.prod}")
     String apiKey;
 
-    String birthDateSearchType = "expression";
+    String birthDateSearchType = null;
 
-//    String birthDate = "*-01-26";
+    String birthDate = null;
+
+    String limit = "500";
+
+    List<String> idCollect = new ArrayList<>();
+
+    List<EmployeeInfo> employeeInfoList = new ArrayList<>();
+
+    List<ListOfPeople> listOfPeople = new ArrayList<>();
 
     @Override
-    public List<ListOfPeople> list(String birthDate) {
+    public CompanyInfo companyInfo() {
+        return companiesRepo.save(companiesFeign.companiesInfo());
+    }
+
+    @Override
+    public String saveEmployeesInfo() {
+
         CompanyInfo companyInfo = companiesFeign.companiesInfo();
-
-        List<String> idCollect = new ArrayList<>();
-
-        List<EmployeeInfo> employeeInfoList = new ArrayList<>();
-
-        List<ListOfPeople> listOfPeople = new ArrayList<>();
-
 
         for (int i = 0; i < companyInfo.getEntities().size(); i++){
 
@@ -54,12 +71,38 @@ public class ListOfEmployeesFromAllCompaniesServiceImpl implements ListOfEmploye
 
         for (int i = 0; i < idCollect.size(); i++){
             String id = idCollect.get(i);
-            EmployeeInfo employeeInfo = employeesFeign.info( apiKey, id, birthDate, birthDateSearchType);
+            EmployeeInfo employeeInfo = employeesFeign.info(apiKey, id, birthDate, birthDateSearchType ,limit);
             employeeInfoList.add(employeeInfo);
-            listOfPeople.addAll(listOfEmployeesFromOneCompanyService.creationOfEmployees(employeeInfoList.get(i)));
         }
+        employeesRepo.saveAll(employeeInfoList);
 
-        return Stream.of(listOfPeople)
+        return "ok";
+    }
+
+    @Override
+    public String deleteAllEmpInfo() {
+        employeesRepo.deleteAll();
+        return "deleted";
+    }
+
+    @Override
+    public List<ListOfPeople> createNews(String birthDate) {
+
+        CompanyInfo companyInfo = companiesFeign.companiesInfo();
+        for (int i = 0; i < companyInfo.getEntities().size(); i++){
+
+            idCollect.add(companyInfo.getEntities().get(i).getId());
+        }
+        for (int i = 0; i < idCollect.size(); i++){
+
+            Iterable<EmployeeInfo> iterable = employeesRepo.findAll();
+            List<EmployeeInfo> result =
+                    StreamSupport.stream(iterable.spliterator(), false)
+                            .collect(Collectors.toList());
+
+           listOfPeople.addAll(listOfEmployeesFromOneCompanyService.creationOfEmployees(result.get(i)));
+        }
+                return Stream.of(listOfPeople)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }

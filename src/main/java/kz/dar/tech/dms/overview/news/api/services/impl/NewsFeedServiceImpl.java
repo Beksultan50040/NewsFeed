@@ -2,7 +2,7 @@ package kz.dar.tech.dms.overview.news.api.services.impl;
 
 import kz.dar.tech.dms.overview.news.api.feign.EmployeesFeign;
 import kz.dar.tech.dms.overview.news.api.models.employees.EmployeeInfo;
-import kz.dar.tech.dms.overview.news.api.models.employees.NewsFeedModel;
+import kz.dar.tech.dms.overview.news.api.models.NewsFeedModel;
 import kz.dar.tech.dms.overview.news.api.services.ListOfEmployeesFromAllCompaniesService;
 import kz.dar.tech.dms.overview.news.api.services.ListOfEmployeesFromOneCompanyService;
 import kz.dar.tech.dms.overview.news.api.services.NewsFeedService;
@@ -44,17 +44,19 @@ public class NewsFeedServiceImpl implements NewsFeedService {
         newsFeedModel.setDate(LocalDate.now());
         newsFeedModel.setLogoUrl("TestLogo");
         newsFeedModel.setPrimaryText("Happy Birthday!");
-        newsFeedModel.setListOfPeople(listOfEmployeesFromAllCompaniesService.list(birthDate));
+        newsFeedModel.setListOfPeople(listOfEmployeesFromAllCompaniesService.createNews(birthDate));
         newsFeedModel.setSecondaryText("Dear Friends!");
         newsFeedModel.setImageURL("TestURL");
 
         return newsFeedModel;
 
+//        listOfEmployeesFromAllCompaniesService.list(birthDate);
+
 
     }
 
     @Override
-    public String deleteAll() {
+    public java.lang.String deleteAll() {
         return null;
     }
 

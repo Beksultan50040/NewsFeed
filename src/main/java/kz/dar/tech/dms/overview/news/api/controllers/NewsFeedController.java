@@ -23,7 +23,7 @@ public class NewsFeedController {
 //        return newsFeedService.save(newsFeed);
 //    }
 //
-    @GetMapping("/findAll")
+    @GetMapping("/find")
     public NewsFeedModel findAll(@RequestParam (required = false) String birthDate ){
         return newsFeedService.findAll(birthDate);
     }
